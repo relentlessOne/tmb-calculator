@@ -15,35 +15,33 @@
         tools:layout_editor_absoluteX="7dp"
         tools:layout_editor_absoluteY="8dp">
 
-        <EditText
-            android:id="@+id/editText3"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:text="Calculator"
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/button10"
+            android:id="@+id/simple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Simple" />
 
         <Button
-            android:id="@+id/button11"
+            android:id="@+id/advanced"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Advanced" />
 
         <Button
-            android:id="@+id/button12"
+            android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="About" />
 
         <Button
-            android:id="@+id/button13"
+            android:id="@+id/exit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Exit" />
