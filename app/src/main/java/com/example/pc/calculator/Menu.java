@@ -1,6 +1,7 @@
 package com.example.pc.calculator;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,11 +56,11 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void simpleOnClick() {
-
+        startActivity(new Intent(Menu.this, Simple.class));
     }
 
     private void advancedOnClick() {
-
+        startActivity(new Intent(Menu.this, Advanced.class));
     }
 
     private void aboutOnClick() {
@@ -76,6 +77,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void exitOnClick() {
-
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 }
