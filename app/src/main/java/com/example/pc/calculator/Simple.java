@@ -1,5 +1,7 @@
 package com.example.pc.calculator;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,8 +15,10 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
     private double firstNum;
     private double secondNum;
     private double memory;
+    private double out;
     private boolean allowDot;
     private boolean loadFirstNumber;
+    private boolean initalRun;
 
     private TextView input1;
     private TextView input2;
@@ -47,8 +51,10 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_simple);
 
         memory = 0;
+        out = 0.0;
         allowDot = true;
         loadFirstNumber = true;
+        initalRun = true;
 
         input1 = (TextView) findViewById(R.id.input1);
         input2 = (TextView) findViewById(R.id.input2);
@@ -198,6 +204,8 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
         operator.setText("");
         allowDot = true;
         loadFirstNumber = true;
+        out = 0.0;
+        initalRun = true;
     }
 
     private void backspace() {
@@ -222,7 +230,6 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
 
 
         if (operator.getText().equals("")) {
-
             if (input1LastChar.equals(".")) {
                 input1.setText(input1.getText().subSequence(0, input1.length() - 1));
             }
@@ -231,6 +238,12 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
             loadFirstNumber = false;
             input2.setText("0");
             allowDot = true;
+
+        } else {
+            input1.setText(Double.toString(out));
+            input2.setText("");
+            sum.setText("");
+            operator.setText(op);
         }
 
     }
@@ -267,12 +280,58 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
             input2.setText(input2.getText().subSequence(0, input2.length() - 1));
         }
 
-        double num1 = Double.parseDouble(input1.getText().toString());
-        double num2 = Double.parseDouble(input2.getText().toString());
 
-        double out = num1 + num2;
+        double num1 = 0;
+        double num2 = 0;
 
-        sum.setText("= "+ out);
+        if(initalRun){
+            num1 = Double.parseDouble(input1.getText().toString());
+            num2 = Double.parseDouble(input2.getText().toString());
+            initalRun = false;
+        } else {
+            input1.setText(Double.toString(out));
+            num1 = out;
+            num2 = Double.parseDouble(input2.getText().toString());
+        }
+
+
+
+
+
+        switch (operator.getText().toString()){
+            case "/":
+                if(num2 != 0.0){
+                    out = num1 / num2;
+                    sum.setText("= "+ out);
+                } else{
+                    clear();
+                    AlertDialog alertDialog = new AlertDialog.Builder(Simple.this).create();
+                    alertDialog.setTitle("Warning");
+                    alertDialog.setMessage("\nCannot divide by zero\n");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CLOSE",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+            case "+":
+                out = num1 + num2;
+                sum.setText("= "+ out);
+                break;
+            case "-":
+                out = num1 - num2;
+                sum.setText("= "+ out);
+                break;
+            case "*":
+                out = num1 * num2;
+                sum.setText("= "+ out);
+                break;
+        }
+
+
 
     }
 
