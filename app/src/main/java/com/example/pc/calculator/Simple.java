@@ -10,10 +10,16 @@ import java.text.DecimalFormat;
 
 public class Simple extends AppCompatActivity implements View.OnClickListener {
 
-    private double number;
+    private double firstNum;
+    private double secondNum;
     private double memory;
+    private boolean allowDot;
+    private boolean loadFirstNumber;
 
-    private TextView out;
+    private TextView input1;
+    private TextView input2;
+    private TextView sum;
+    private TextView operator;
 
     private Button bksp;
     private Button c;
@@ -40,11 +46,20 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple);
 
-        out = (TextView) findViewById(R.id.out);
-        number = 0;
         memory = 0;
+        allowDot = true;
+        loadFirstNumber = true;
 
-        out.setText(new DecimalFormat("##").format(number));
+        input1 = (TextView) findViewById(R.id.input1);
+        input2 = (TextView) findViewById(R.id.input2);
+        sum = (TextView) findViewById(R.id.sum);
+        operator = (TextView) findViewById(R.id.operator);
+
+        input1.setText("0");
+        input2.setText("");
+        sum.setText("");
+        operator.setText("");
+
         initButtons();
     }
 
@@ -53,22 +68,31 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bksp:
+                backspace();
                 break;
             case R.id.c:
+                clear();
                 break;
             case R.id.sign:
+                changeSign();
                 break;
             case R.id.divide:
+                operation("/");
                 break;
             case R.id.multiply:
+                operation("*");
                 break;
             case R.id.minus:
+                operation("-");
                 break;
             case R.id.plus:
+                operation("+");
                 break;
             case R.id.equals:
+                sum();
                 break;
             case R.id.dot:
+                dot();
                 break;
             case R.id.num9:
                 updateNumber(9);
@@ -146,21 +170,111 @@ public class Simple extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void updateNumber(double num) {
-
-        int length = String.valueOf(number).length();
-        String tmp = new DecimalFormat("##").format(number);
-        if (length < 9) {
-
-            if (number == 0) {
-                tmp = new DecimalFormat("##").format(num);
-            } else {
-                tmp += new DecimalFormat("##").format(num);
-            }
-
+    private TextView whichToLoad() {
+        if (loadFirstNumber) {
+            return input1;
+        } else {
+            return input2;
         }
-        out.setText(tmp);
+    }
+
+    private void updateNumber(int num) {
+        TextView tmp = whichToLoad();
+
+
+        if (tmp.getText().equals("0")) {
+            tmp.setText(Integer.toString(num));
+        } else {
+            tmp.setText(tmp.getText() + Integer.toString(num));
+        }
 
 
     }
+
+    private void clear() {
+        input1.setText("0");
+        input2.setText("");
+        sum.setText("");
+        operator.setText("");
+        allowDot = true;
+        loadFirstNumber = true;
+    }
+
+    private void backspace() {
+        TextView tmp = whichToLoad();
+        String lastChar = tmp.getText().toString().substring(tmp.length() - 1);
+
+        if (tmp.length() != 1) {
+
+            if (lastChar.equals("."))
+                allowDot = true;
+
+            tmp.setText(tmp.getText().subSequence(0, tmp.length() - 1));
+        } else {
+            tmp.setText("0");
+        }
+
+    }
+
+
+    private void operation(String op) {
+        String input1LastChar = input1.getText().toString().substring(input1.length() - 1);
+
+
+        if (operator.getText().equals("")) {
+
+            if (input1LastChar.equals(".")) {
+                input1.setText(input1.getText().subSequence(0, input1.length() - 1));
+            }
+
+            operator.setText(op);
+            loadFirstNumber = false;
+            input2.setText("0");
+            allowDot = true;
+        }
+
+    }
+
+    private void dot() {
+        TextView tmp = whichToLoad();
+
+        if (allowDot) {
+            tmp.setText(tmp.getText() + ".");
+            allowDot = false;
+        }
+    }
+
+    private void changeSign() {
+        TextView tmp = whichToLoad();
+
+        String firstChar = tmp.getText().toString().substring(0, 1);
+
+        if (!tmp.getText().toString().equals("0")) {
+            if (firstChar.equals("-")) {
+                tmp.setText(tmp.getText().toString().substring(1, tmp.length()));
+            } else {
+                tmp.setText("-" + tmp.getText());
+            }
+        }
+
+
+    }
+
+    private void sum() {
+        String input2LastChar = input2.getText().toString().substring(input2.length() - 1);
+
+        if (input2LastChar.equals(".")) {
+            input2.setText(input2.getText().subSequence(0, input2.length() - 1));
+        }
+
+        double num1 = Double.parseDouble(input1.getText().toString());
+        double num2 = Double.parseDouble(input2.getText().toString());
+
+        double out = num1 + num2;
+
+        sum.setText("= "+ out);
+
+    }
+
+
 }
