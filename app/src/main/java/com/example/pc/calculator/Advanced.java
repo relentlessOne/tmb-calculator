@@ -238,28 +238,48 @@ public class Advanced extends AppCompatActivity implements View.OnClickListener 
 
         if(!sum.getText().equals("")){
 
-            if(sum.getText().toString().indexOf('E') >= 1){
-                AlertDialog alertDialog = new AlertDialog.Builder(Advanced.this).create();
-                alertDialog.setTitle("Warning");
-                alertDialog.setMessage("\nNumber is too big\n");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CLOSE",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+
+
+            if(operator.getText().toString().equals("pow(y)") && sum.getText().toString().equals("")){
+
+                TextView tmp = whichToLoad();
+
+
+                if (tmp.getText().equals("0") || tmp.getText().equals("0.0")) {
+                    tmp.setText(Integer.toString(num));
+                } else {
+                    tmp.setText(tmp.getText() + Integer.toString(num));
+                }
+
+                sum.setText("");
+
+
             } else {
 
-                sum.setText(sum.getText()+ Integer.toString(num));
+                if(sum.getText().toString().indexOf('E') >= 1){
+                    AlertDialog alertDialog = new AlertDialog.Builder(Advanced.this).create();
+                    alertDialog.setTitle("Warning");
+                    alertDialog.setMessage("\nNumber is too big\n");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CLOSE",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                } else {
+
+                    sum.setText(sum.getText()+ Integer.toString(num));
+                }
             }
+
 
         } else {
 
             TextView tmp = whichToLoad();
 
 
-            if (tmp.getText().equals("0") || tmp.getText().equals("0.0")) {
+            if (tmp.getText().equals("0") ) {
                 tmp.setText(Integer.toString(num));
             } else {
                 tmp.setText(tmp.getText() + Integer.toString(num));
@@ -283,45 +303,109 @@ public class Advanced extends AppCompatActivity implements View.OnClickListener 
 
     private void backspace() {
 
-        if(!sum.getText().equals("")){
+        if(input1.getText().toString().length() == 2 && input1.getText().charAt(0) == '-'){
+            input1.setText("0.0");
+            return;
+        }
 
-            if(sum.getText().toString().indexOf('E') >= 1){
-                AlertDialog alertDialog = new AlertDialog.Builder(Advanced.this).create();
-                alertDialog.setTitle("Warning");
-                alertDialog.setMessage("\nNumber is too big\n");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CLOSE",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-            } else {
+        if(input1.getText().toString().length() == 3 && input1.getText().charAt(0) == '-' && input1.getText().charAt(2) == '.'){
+            input1.setText("0.0");
+            return;
+        }
 
-                if (sum.length() != 2) {
+        if(input2.getText().toString().length() == 2 && input2.getText().charAt(0) == '-'){
+            input2.setText("0.0");
+            return;
+        }
 
-                    sum.setText(sum.getText().subSequence(0, sum.length() - 1));
-                    out = Double.parseDouble(sum.getText().toString().substring(2, sum.length()));
+        if(input2.getText().toString().length() == 3 && input2.getText().charAt(0) == '-' && input2.getText().charAt(2) == '.'){
+            input2.setText("0.0");
+            return;
+        }
+
+        if(sum.getText().toString().length() == 4 && sum.getText().charAt(2) == '-'){
+            sum.setText("= 0.0");
+            return;
+        }
+
+        if(sum.getText().toString().length() == 5 && sum.getText().charAt(0) == '-' && sum.getText().charAt(4) == '.'){
+            sum.setText("= 0.0");
+            return;
+        }
+
+        boolean allow = true;
+
+        if(input1.getText().toString().equals("NaN") || input1.getText().toString().equals("Infinity") || input1.getText().toString().equals("-Infinity")){
+            allow = false;
+        }
+
+        if(input2.getText().toString().equals("NaN") || input2.getText().toString().equals("Infinity") || input2.getText().toString().equals("-Infinity")){
+            allow = false;
+        }
+
+        if(sum.getText().toString().equals("= NaN") || sum.getText().toString().equals("= Infinity") || sum.getText().toString().equals("= -Infinity")){
+            allow = false;
+        }
+
+
+
+        if(allow){
+            if(!sum.getText().equals("")){
+
+                if(sum.getText().toString().indexOf('E') >= 1){
+                    AlertDialog alertDialog = new AlertDialog.Builder(Advanced.this).create();
+                    alertDialog.setTitle("Warning");
+                    alertDialog.setMessage("\nNumber is too big\n");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CLOSE",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
                 } else {
-                    sum.setText("= 0.0");
-                    out = 0.0;
+
+
+                    int allowedLength = 0;
+
+                    if(sum.getText().toString().charAt(2) == '-'){
+                        allowedLength = 4;
+                    } else {
+                        allowedLength = 3;
+                    }
+
+                    if (sum.length() != allowedLength) {
+
+                        sum.setText(sum.getText().subSequence(0, sum.length() - 1));
+                        out = Double.parseDouble(sum.getText().toString().substring(2, sum.length()));
+                    } else {
+                        sum.setText("= 0.0");
+                        out = 0.0;
+                    }
+                }
+
+
+
+            } else {
+                TextView tmp = whichToLoad();
+                String lastChar = tmp.getText().toString().substring(tmp.length() - 1);
+
+                if (tmp.length() != 1) {
+
+                    if (lastChar.equals("."))
+                        allowDot = true;
+
+                    tmp.setText(tmp.getText().subSequence(0, tmp.length() - 1));
+                } else {
+                    tmp.setText("0");
                 }
             }
-
         } else {
-            TextView tmp = whichToLoad();
-            String lastChar = tmp.getText().toString().substring(tmp.length() - 1);
-
-            if (tmp.length() != 1) {
-
-                if (lastChar.equals("."))
-                    allowDot = true;
-
-                tmp.setText(tmp.getText().subSequence(0, tmp.length() - 1));
-            } else {
-                tmp.setText("0");
-            }
+             clear();
         }
+
+
+
 
 
 
@@ -352,6 +436,7 @@ public class Advanced extends AppCompatActivity implements View.OnClickListener 
             } else {
                 input1.setText(Double.toString(out));
                 input2.setText("0");
+                sum.setText("");
                 operator.setText(op);
             }
 
@@ -395,15 +480,19 @@ public class Advanced extends AppCompatActivity implements View.OnClickListener 
         if(!sum.getText().equals("")){
             //String firstChar = sum.getText().toString().substring(2, 3);
 
-            out *= -1;
-            sum.setText("= "+Double.toString(out));
+            if(!sum.getText().toString().equals("= 0.0") && !sum.getText().toString().equals("= 0")){
+                out = Double.parseDouble(sum.getText().toString().substring(2));
+                out *= -1;
+                sum.setText("= "+Double.toString(out));
+
+            }
 
         } else {
             TextView tmp = whichToLoad();
 
             String firstChar = tmp.getText().toString().substring(0, 1);
 
-            if (!tmp.getText().toString().equals("0") || !tmp.getText().toString().equals("0.0")) {
+            if (!tmp.getText().toString().equals("0") && !tmp.getText().toString().equals("0.0")) {
                 if (firstChar.equals("-")) {
                     tmp.setText(tmp.getText().toString().substring(1, tmp.length()));
                 } else {
